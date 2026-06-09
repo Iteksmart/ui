@@ -1,0 +1,37 @@
+{
+  "name": "@itechsmart/prooflink",
+  "version": "1.0.0",
+  "description": "iTechSmart ProofLink SDK \u2014 seal and verify cryptographic audit receipts",
+  "license": "MIT",
+  "author": "iTechSmart Inc. <djuane@itechsmart.dev>",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "npm run build && node --test test/client.test.mjs"
+  },
+  "keywords": [
+    "prooflink",
+    "audit",
+    "receipts",
+    "uaio",
+    "itechsmart"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}

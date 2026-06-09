@@ -3,6 +3,7 @@ import { GeistMono } from "geist/font/mono"
 import { GeistSans } from "geist/font/sans"
 
 import { Providers } from "@/components/providers"
+import { PwaRegister } from "@/components/pwa-register"
 import { SuiteShell } from "@/components/suite-shell"
 
 import "./globals.css"
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable} dark`} suppressHydrationWarning>
       <body>
         <Providers>
+          <PwaRegister />
           <SuiteShell>{children}</SuiteShell>
         </Providers>
       </body>

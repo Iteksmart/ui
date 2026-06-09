@@ -1,6 +1,10 @@
 import type { LucideIcon } from "lucide-react"
 import {
   Bell,
+  BookOpen,
+  CreditCard,
+  Handshake,
+  Rocket,
   Boxes,
   Calculator,
   Cpu,
@@ -191,6 +195,38 @@ export const SUITE_APPS: SuiteApp[] = [
     tagline: "Workflow marketplace — install proven automations in one click",
     icon: ShoppingBag,
     priority: 20,
+  },
+  {
+    slug: "signup",
+    domain: "signup.itechsmart.dev",
+    name: "Get Started",
+    tagline: "Self-service signup — ICP-scored, sandbox provisioned in minutes",
+    icon: Rocket,
+    priority: 21,
+  },
+  {
+    slug: "billing",
+    domain: "billing.itechsmart.dev",
+    name: "Billing",
+    tagline: "Usage metering — every sealed receipt is a metered action",
+    icon: CreditCard,
+    priority: 22,
+  },
+  {
+    slug: "partner",
+    domain: "partner.itechsmart.dev",
+    name: "Partner Portal",
+    tagline: "MSP reseller console — all client tenants, one grid, 30% revenue share",
+    icon: Handshake,
+    priority: 23,
+  },
+  {
+    slug: "docs",
+    domain: "docs.itechsmart.dev",
+    name: "Developer Portal",
+    tagline: "Docs, SDKs, CLI reference, and a live API playground",
+    icon: BookOpen,
+    priority: 24,
   },
 ]
 

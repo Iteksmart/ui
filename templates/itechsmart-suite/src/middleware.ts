@@ -24,6 +24,10 @@ const HOST_TO_SLUG: Record<string, string> = {
   "forge.itechsmart.dev": "forge",
   "edge.itechsmart.dev": "edge",
   "marketplace.itechsmart.dev": "marketplace",
+  "signup.itechsmart.dev": "signup",
+  "billing.itechsmart.dev": "billing",
+  "partner.itechsmart.dev": "partner",
+  "docs.itechsmart.dev": "docs",
 }
 
 export function middleware(req: NextRequest) {
