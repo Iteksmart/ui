@@ -1,0 +1,280 @@
+@import "tailwindcss";
+
+/* ── iTechSmart Design Tokens — Master Context §10 ─────────────────── */
+:root {
+  --its-purple: #5b2d8e;
+  --its-purple-light: #7c5cbf;
+  --its-purple-dark: #3d1f6b;
+  --its-teal: #1d9e75;
+  --its-amber: #c2570a;
+  --its-red: #b91c1c;
+  --its-blue: #1d4ed8;
+  --its-gray-50: #f9fafb;
+  --its-gray-900: #111827;
+
+  --background: #f9fafb;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --border: #e5e7eb;
+  --border-strong: #d1d5db;
+  --foreground: #111827;
+  --muted: #6b7280;
+  --muted-faint: #9ca3af;
+  --accent: var(--its-purple);
+  --accent-soft: #f3eefb;
+  --success: var(--its-teal);
+  --success-soft: #e6f7f0;
+  --warning: var(--its-amber);
+  --warning-soft: #fdf0e4;
+  --danger: var(--its-red);
+  --danger-soft: #fdecec;
+  --info: var(--its-blue);
+  --info-soft: #e8eefc;
+  --glow: 91 45 142;
+}
+
+.dark {
+  --background: #0a0710;
+  --surface: #120d1c;
+  --surface-raised: #181126;
+  --border: #261c3a;
+  --border-strong: #382a52;
+  --foreground: #f4f1fa;
+  --muted: #a99cc4;
+  --muted-faint: #6f6390;
+  --accent: #9d7ad6;
+  --accent-soft: #221636;
+  --success: #34d39e;
+  --success-soft: #0d2b21;
+  --warning: #f59e4b;
+  --warning-soft: #2e1c0a;
+  --danger: #f87171;
+  --danger-soft: #2e0f0f;
+  --info: #60a5fa;
+  --info-soft: #0f1a33;
+  --glow: 157 122 214;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-raised: var(--surface-raised);
+  --color-edge: var(--border);
+  --color-edge-strong: var(--border-strong);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-faint: var(--muted-faint);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+  --color-its-purple: var(--its-purple);
+  --color-its-purple-light: var(--its-purple-light);
+  --color-its-purple-dark: var(--its-purple-dark);
+  --font-sans: var(--font-geist-sans), "Inter", system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+}
+
+* {
+  border-color: var(--border);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ── Ambient aurora backdrop ───────────────────────────────────────── */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+.aurora::before,
+.aurora::after {
+  content: "";
+  position: absolute;
+  width: 60vw;
+  height: 60vw;
+  border-radius: 50%;
+  filter: blur(120px);
+  opacity: 0.13;
+  animation: aurora-drift 24s ease-in-out infinite alternate;
+}
+.aurora::before {
+  background: var(--its-purple-light);
+  top: -20vw;
+  right: -10vw;
+}
+.aurora::after {
+  background: var(--its-teal);
+  bottom: -30vw;
+  left: -15vw;
+  animation-delay: -12s;
+}
+@keyframes aurora-drift {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(6vw, 4vh, 0) scale(1.15);
+  }
+}
+
+/* Theme-aware gradient text — both stops swap with the mode so contrast
+   holds on light and dark backgrounds. */
+.gradient-text {
+  background: linear-gradient(90deg, var(--accent), var(--success));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ── Spec animations — Master Context §10 ──────────────────────────── */
+
+/* Card hover: shadow depth + translateY(-2px), 150ms ease-in-out */
+.card-lift {
+  transition:
+    transform 150ms ease-in-out,
+    box-shadow 150ms ease-in-out,
+    border-color 150ms ease-in-out;
+}
+.card-lift:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 24px -8px rgb(var(--glow) / 0.25),
+    0 2px 8px -2px rgb(0 0 0 / 0.1);
+  border-color: var(--border-strong);
+}
+
+/* Button press: scale(0.97) + brightness(0.95), 100ms ease-in */
+.btn-press {
+  transition:
+    transform 100ms ease-in,
+    filter 100ms ease-in;
+}
+.btn-press:active {
+  transform: scale(0.97);
+  filter: brightness(0.95);
+}
+
+/* Status badge: pulse on OPERATIONAL, 2s loop ease-in-out */
+@keyframes status-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgb(29 158 117 / 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgb(29 158 117 / 0);
+  }
+}
+.pulse-operational {
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
+/* Loading skeleton: shimmer left to right, 1.5s loop linear */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--border) 60%, transparent);
+  border-radius: 8px;
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--foreground) 8%, transparent),
+    transparent
+  );
+  animation: shimmer 1.5s linear infinite;
+}
+@keyframes shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* SSE update: flash highlight on changed row, 500ms ease-out */
+@keyframes row-flash {
+  0% {
+    background: color-mix(in srgb, var(--success) 22%, transparent);
+  }
+  100% {
+    background: transparent;
+  }
+}
+.flash-update {
+  animation: row-flash 500ms ease-out;
+}
+
+/* Receipt sealed: green flash, 400ms */
+@keyframes seal-flash {
+  0% {
+    background: color-mix(in srgb, var(--success) 35%, transparent);
+    box-shadow: 0 0 0 4px rgb(29 158 117 / 0.35);
+  }
+  100% {
+    background: transparent;
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+.seal-flash {
+  animation: seal-flash 400ms ease-out;
+}
+
+/* Live tick dot */
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.live-dot {
+  animation: blink 2s ease-in-out infinite;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 8px;
+  border: 2px solid var(--background);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

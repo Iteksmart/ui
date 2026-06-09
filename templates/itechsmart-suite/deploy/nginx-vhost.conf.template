@@ -1,0 +1,29 @@
+# Per-subdomain vhost for the iTechSmart Suite container.
+# Replace __DOMAIN__ (e.g. verify.itechsmart.dev). All twenty vhosts proxy to
+# the SAME container — the app routes by Host header.
+#
+# Standing rules honored:
+#   - resolver 127.0.0.11 + variable upstream (no static proxy_pass)
+#   - reload only: docker exec suite-nginx nginx -s reload
+
+server {
+    listen 443 ssl;
+    server_name __DOMAIN__;
+
+    ssl_certificate     /etc/nginx/certs/itechsmart-origin.pem;
+    ssl_certificate_key /etc/nginx/certs/itechsmart-origin.key;
+
+    resolver 127.0.0.11 valid=10s;
+    set $suite_upstream itechsmart-suite:3300;
+
+    location / {
+        proxy_pass http://$suite_upstream;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}
