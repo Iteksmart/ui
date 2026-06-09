@@ -1,0 +1,47 @@
+# iTechSmart telemetry funnel — Gap 1A (deploy on OVH as itechsmart-vector).
+# Completed from the build spec: adds redaction before anything leaves the
+# host, disk buffering so Letta downtime never drops logs, severity-based
+# sampling, and an internal-metrics sink so Vector itself is monitored.
+
+[sources.docker_logs]
+type = "docker_logs"
+
+[sources.vector_metrics]
+type = "internal_metrics"
+
+[transforms.parse_logs]
+type = "remap"
+inputs = ["docker_logs"]
+source = '''
+.container = .container_name
+.severity = if match(string!(.message), r'ERROR|CRITICAL|FATAL|PANIC') { "error" }
+  else if match(string!(.message), r'WARN') { "warn" }
+  else { "info" }
+.timestamp = now()
+
+# Redact before the log leaves this host — mirrors itsloop.sense.redact()
+.message = replace(string!(.message), r'[\w.+-]+@[\w-]+\.[\w.]+', "<email>")
+.message = replace(string!(.message), r'(?i)bearer\s+[a-zA-Z0-9_\-.=]+', "Bearer <token>")
+.message = replace(string!(.message), r'(?i)(api[_-]?key|token|secret|password)\s*[=:]\s*\S+', "$$1=<redacted>")
+'''
+
+# Keep every warn/error; sample info logs 1-in-10 so pgvector stays lean.
+[transforms.sample_info]
+type = "sample"
+inputs = ["parse_logs"]
+rate = 10
+exclude = '.severity == "error" || .severity == "warn"'
+
+[sinks.letta_megamind]
+type = "http"
+inputs = ["sample_info"]
+uri = "http://suite-letta:8100/api/v1/ingest"
+encoding.codec = "json"
+buffer.type = "disk"
+buffer.max_size = 268435488            # 256 MiB survives Letta restarts
+request.retry_attempts = 8
+
+[sinks.prometheus_exporter]
+type = "prometheus_exporter"
+inputs = ["vector_metrics"]
+address = "0.0.0.0:9598"               # scrape target for suite-prometheus
