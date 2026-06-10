@@ -41,9 +41,11 @@ def cmd_status(args: argparse.Namespace) -> int:
     data = _client(args).status()
     state = str(data.get("status", "UNKNOWN"))
     badge = _color(f" {state} ", GREEN if state == "OPERATIONAL" else RED)
-    print(f"{badge}  containers={data.get('containers', '?')}  "
-          f"mttr={data.get('mttr_minutes', data.get('mttr', '?'))}min  "
-          f"autonomy={data.get('autonomy_rate', '?')}%")
+    infra = data.get("infrastructure") or {}
+    autonomy = data.get("autonomy") or {}
+    print(f"{badge}  containers={infra.get('containers_running', data.get('containers', '?'))}  "
+          f"receipts={(data.get('prooflink') or {}).get('total_receipts', '?')}  "
+          f"autonomy={autonomy.get('current_verified_rate_pct', data.get('autonomy_rate', '?'))}%")
     if args.json:
         _print_json(data)
     return 0

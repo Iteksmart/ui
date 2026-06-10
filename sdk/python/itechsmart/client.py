@@ -119,11 +119,14 @@ class ProofLink:
         if not receipt_id:
             raise ValueError("receipt_id is required")
         raw = self._request("GET", f"{self.verify_base}/api/verify/{receipt_id}")
+        # live API nests the verdict under "receipt" (v2 schema); accept both shapes
+        receipt = raw.get("receipt") or {}
         return VerifyResult(
             found=bool(raw.get("found", raw.get("ok", False))),
-            chain_intact=bool(raw.get("chain_intact", raw.get("valid", False))),
-            chain_position=raw.get("chain_position"),
-            anchored=bool(raw.get("anchored", False)),
+            chain_intact=bool(receipt.get("verified",
+                              raw.get("chain_intact", raw.get("valid", False)))),
+            chain_position=receipt.get("chain_position", raw.get("chain_position")),
+            anchored=bool(raw.get("anchored", receipt.get("verified", False))),
             raw=raw,
         )
 
